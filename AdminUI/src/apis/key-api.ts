@@ -1,16 +1,23 @@
 import Fetch from 'beer-network/api';
+import { Session } from 'beer-network/session';
 
 class KeyApi extends Fetch {
   async list<T>(keyword: string) {
-    return this.get<T>(`/pair/list${keyword === undefined || keyword === '' ? '' : '/' + keyword}`, undefined);
+    const token = Session.getBearer();
+    return this.get<T>(`/pair/list${keyword === undefined || keyword === '' ? '' : '/' + keyword}`, { token });
   }
 
   async save(params: {}) {
-    return this.post<any>('/pair/save', undefined, params);
+    const token = Session.getBearer();
+    return this.putBody<any>('/pair', { token }, params);
   }
 
   async remove(key: string) {
-    return this.post<any>('/pair/remove', undefined, { key });
+    const token = Session.getBearer();
+    return this.delete<any>('/pair', {
+      key,
+      token
+    });
   }
 }
 
